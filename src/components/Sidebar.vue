@@ -14,14 +14,37 @@ const emit = defineEmits([
 const title = ref('')
 const body = ref('')
 
+const comments = ref([])
+const commentsLoading = ref(false)
+
 watch(
   () => props.post,
-  newPost => {
+  async newPost => {
     title.value = newPost?.title || ''
     body.value = newPost?.body || ''
+
+    if (newPost?.id) {
+      await loadComments(newPost.id)
+    }
   },
   { immediate: true }
 )
+
+async function loadComments(postId) {
+  commentsLoading.value = true
+
+  try {
+    const response = await fetch(
+      `https://mate-academy.github.io/fe-students-api/api/comments?postId=${postId}`
+    )
+
+    comments.value = await response.json()
+  } catch (err) {
+    console.error(err)
+  } finally {
+    commentsLoading.value = false
+  }
+}
 
 function handleSave() {
   const newPost = {
@@ -45,7 +68,10 @@ function handleClose() {
 </script>
 
 <template>
-  <div class="box mt-4">
+  <div
+    class="sidebar box mt-4"
+    :class="{ 'Sidebar--open': post }"
+  >
     <h2 class="title is-4">
       {{ post ? 'Edit Post' : 'New Post' }}
     </h2>
@@ -96,6 +122,32 @@ function handleClose() {
       >
         Cancel
       </button>
+    </div>
+
+    <hr>
+
+    <div class="mt-5">
+      <h3 class="title is-5">
+        Comments
+      </h3>
+
+      <div v-if="commentsLoading">
+        Loading comments...
+      </div>
+
+      <div
+        v-for="comment in comments"
+        :key="comment.id"
+        class="box"
+      >
+        <p class="has-text-weight-bold">
+          {{ comment.name }}
+        </p>
+
+        <p>
+          {{ comment.body }}
+        </p>
+      </div>
     </div>
   </div>
 </template>

@@ -1,27 +1,50 @@
-vue
 <script setup>
-const props = defineProps({ posts: Array, loading: Boolean, error: Boolean, selectedPost: Object, }) 
-const emit = defineEmits(['open-post', 'create-post', 'close-post'])
+import Loader from './Loader.vue'
+
+const props = defineProps({
+  posts: Array,
+  loading: Boolean,
+  error: Boolean,
+  selectedPost: Object,
+})
+
+const emit = defineEmits([
+  'open-post',
+  'create-post',
+  'close-post',
+])
 </script>
+
 <template>
   <div class="tile is-parent is-4-desktop">
     <div class="tile is-child box">
-      <!-- HEADER -->
       <div
         class="is-flex is-justify-content-space-between is-align-items-center mb-4"
       >
-        <h2 class="title is-4 mb-0">Posts</h2>
-        <button class="button is-link" @click="emit('create-post')">
+        <h2 class="title is-4 mb-0">
+          Posts
+        </h2>
+
+        <button
+          class="button is-link"
+          @click="emit('create-post')"
+        >
           Add New Post
         </button>
       </div>
-      <!-- LOADING -->
-      <div v-if="loading" class="has-text-centered p-4">Loading...</div>
+
+      <!-- LOADER -->
+      <Loader v-if="loading" />
+
       <!-- ERROR -->
-      <div v-else-if="error" class="notification is-danger">
+      <div
+        v-else-if="error"
+        class="notification is-danger"
+      >
         Failed to load posts
       </div>
-      <!-- TABLE -->
+
+      <!-- POSTS -->
       <table
         v-else-if="posts.length"
         class="table is-fullwidth is-striped is-hoverable"
@@ -30,15 +53,24 @@ const emit = defineEmits(['open-post', 'create-post', 'close-post'])
           <tr>
             <th>ID</th>
             <th>Title</th>
-            <th class="has-text-right">Actions</th>
+            <th class="has-text-right">
+              Actions
+            </th>
           </tr>
         </thead>
+
         <tbody>
-          <tr v-for="post in posts" :key="post.id">
+          <tr
+            v-for="post in posts"
+            :key="post.id"
+          >
             <td>{{ post.id }}</td>
-            <td class="has-text-weight-medium">{{ post.title }}</td>
+
+            <td class="has-text-weight-medium">
+              {{ post.title }}
+            </td>
+
             <td class="has-text-right">
-              <!-- 🔥 AQUI É O SEGREDO -->
               <button
                 v-if="selectedPost && selectedPost.id === post.id"
                 class="button is-link is-small"
@@ -46,6 +78,7 @@ const emit = defineEmits(['open-post', 'create-post', 'close-post'])
               >
                 Close
               </button>
+
               <button
                 v-else
                 class="button is-link is-small"
@@ -57,8 +90,14 @@ const emit = defineEmits(['open-post', 'create-post', 'close-post'])
           </tr>
         </tbody>
       </table>
+
       <!-- EMPTY -->
-      <div v-else class="has-text-centered p-4">No posts yet</div>
+      <div
+        v-else
+        class="has-text-centered p-4"
+      >
+        No posts yet
+      </div>
     </div>
   </div>
 </template>

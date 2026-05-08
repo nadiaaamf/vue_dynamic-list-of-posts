@@ -6,16 +6,38 @@ const emit = defineEmits(["login"]);
 const email = ref("");
 const error = ref(false);
 
-function handleLogin() {
+async function handleLogin() {
   if (!email.value) {
-    error.value = true;
+    error.value = true
 
-    return;
+    return
   }
 
-  error.value = false;
+  error.value = false
 
-  emit("login", 1);
+  try {
+    const response = await fetch(
+      'https://mate-academy.github.io/fe-students-api/api/users'
+    )
+
+    const users = await response.json()
+
+    const user = users.find(
+      currentUser => currentUser.email === email.value
+    )
+
+    if (!user) {
+      error.value = true
+
+      return
+    }
+
+    emit('login', user.id)
+  } catch (err) {
+    console.error(err)
+
+    error.value = true
+  }
 }
 </script>
 

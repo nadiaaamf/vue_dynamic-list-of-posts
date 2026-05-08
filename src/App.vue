@@ -72,8 +72,8 @@ async function loadPosts() {
 
   try {
     const response = await fetch(
-      `https://jsonplaceholder.typicode.com/posts?userId=${userId.value}`
-    )
+  `https://mate-academy.github.io/fe-students-api/api/posts?userId=${userId.value}`
+)
 
     posts.value = await response.json()
   } catch (err) {
