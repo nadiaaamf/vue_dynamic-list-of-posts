@@ -5,16 +5,7 @@
   />
 
   <div v-else>
-    <Header />
-
-    <div class="container mt-4 has-text-right">
-      <button
-        class="button is-danger"
-        @click="logout"
-      >
-        Logout
-      </button>
-    </div>
+    <Header @logout="handleLogout" />
 
     <div class="container mt-5">
       <PostLists
@@ -62,20 +53,30 @@ async function handleLogin(id) {
   await loadPosts()
 }
 
-async function loadPosts() {
-  if (!userId.value) {
-    return
-  }
+function handleLogout() {
+  userId.value = null
 
+  posts.value = []
+
+  selectedPost.value = null
+
+  isSidebarOpen.value = false
+}
+
+async function loadPosts() {
   loading.value = true
   error.value = false
 
   try {
     const response = await fetch(
-  `https://mate-academy.github.io/fe-students-api/api/posts?userId=${userId.value}`
-)
+      'https://jsonplaceholder.typicode.com/posts'
+    )
 
-    posts.value = await response.json()
+    const data = await response.json()
+
+    posts.value = data.filter(
+      post => post.userId === userId.value
+    )
   } catch (err) {
     error.value = true
 
@@ -87,16 +88,19 @@ async function loadPosts() {
 
 function openPost(post) {
   selectedPost.value = post
+
   isSidebarOpen.value = true
 }
 
 function createPost() {
   selectedPost.value = null
+
   isSidebarOpen.value = true
 }
 
 function closePost() {
   selectedPost.value = null
+
   isSidebarOpen.value = false
 }
 
@@ -129,14 +133,5 @@ function deletePost(id) {
   )
 
   closePost()
-}
-
-function logout() {
-  userId.value = null
-
-  posts.value = []
-  selectedPost.value = null
-
-  isSidebarOpen.value = false
 }
 </script>

@@ -1,13 +1,13 @@
 <script setup>
-import { ref } from "vue";
+import { ref } from 'vue'
 
-const emit = defineEmits(["login"]);
+const emit = defineEmits(['login'])
 
-const email = ref("");
-const error = ref(false);
+const email = ref('')
+const error = ref(false)
 
-async function handleLogin() {
-  if (!email.value) {
+function handleLogin() {
+  if (!email.value.trim()) {
     error.value = true
 
     return
@@ -15,29 +15,7 @@ async function handleLogin() {
 
   error.value = false
 
-  try {
-    const response = await fetch(
-      'https://mate-academy.github.io/fe-students-api/api/users'
-    )
-
-    const users = await response.json()
-
-    const user = users.find(
-      currentUser => currentUser.email === email.value
-    )
-
-    if (!user) {
-      error.value = true
-
-      return
-    }
-
-    emit('login', user.id)
-  } catch (err) {
-    console.error(err)
-
-    error.value = true
-  }
+  emit('login', 1)
 }
 </script>
 
@@ -48,10 +26,14 @@ async function handleLogin() {
         <div class="columns is-centered">
           <div class="column is-4-desktop is-5-tablet">
             <div class="box p-6">
-              <h1 class="title is-1 mb-4">Get your userId</h1>
+              <h1 class="title is-2 mb-5">
+                Get your userId
+              </h1>
 
               <div class="field">
-                <label class="label"> Email </label>
+                <label class="label">
+                  Email
+                </label>
 
                 <div class="control has-icons-left">
                   <input
@@ -60,18 +42,23 @@ async function handleLogin() {
                     type="email"
                     placeholder="Enter your email"
                     @input="error = false"
-                  />
+                  >
 
                   <span class="icon is-small is-left">
                     <i class="fas fa-envelope"></i>
                   </span>
                 </div>
 
-                <p v-if="error" class="help is-danger">Email is required</p>
+                <p
+                  v-if="error"
+                  class="help is-danger"
+                >
+                  Email is required
+                </p>
               </div>
 
               <button
-                class="button is-primary is-medium mt-4"
+                class="button is-link mt-4"
                 @click="handleLogin"
               >
                 Login
