@@ -1,8 +1,5 @@
 <template>
-  <Login
-    v-if="!userId"
-    @login="handleLogin"
-  />
+  <Login v-if="!userId" @login="handleLogin" />
 
   <div v-else>
     <Header @logout="handleLogout" />
@@ -30,108 +27,99 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from "vue";
 
-import Header from './components/Header.vue'
-import Login from './components/Login.vue'
-import PostLists from './components/PostLists.vue'
-import Sidebar from './components/Sidebar.vue'
+import Header from "./components/Header.vue";
+import Login from "./components/Login.vue";
+import PostLists from "./components/PostLists.vue";
+import Sidebar from "./components/Sidebar.vue";
 
-const userId = ref(null)
+const userId = ref(null);
 
-const posts = ref([])
-const selectedPost = ref(null)
+const posts = ref([]);
+const selectedPost = ref(null);
 
-const isSidebarOpen = ref(false)
+const isSidebarOpen = ref(false);
 
-const loading = ref(false)
-const error = ref(false)
+const loading = ref(false);
+const error = ref(false);
 
 async function handleLogin(id) {
-  userId.value = id
+  userId.value = id;
 
-  await loadPosts()
+  await loadPosts();
 }
 
 function handleLogout() {
-  userId.value = null
+  userId.value = null;
 
-  posts.value = []
+  posts.value = [];
 
-  selectedPost.value = null
+  selectedPost.value = null;
 
-  isSidebarOpen.value = false
+  isSidebarOpen.value = false;
 }
 
 async function loadPosts() {
-  loading.value = true
-  error.value = false
+  loading.value = true;
+  error.value = false;
 
   try {
-    const response = await fetch(
-      'https://jsonplaceholder.typicode.com/posts'
-    )
+    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
 
-    const data = await response.json()
+    const data = await response.json();
 
-    posts.value = data.filter(
-      post => post.userId === userId.value
-    )
+    posts.value = data.filter((post) => post.userId === userId.value);
   } catch (err) {
-    error.value = true
+    error.value = true;
 
-    console.error(err)
+    console.error(err);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 function openPost(post) {
-  selectedPost.value = post
+  selectedPost.value = post;
 
-  isSidebarOpen.value = true
+  isSidebarOpen.value = true;
 }
 
 function createPost() {
-  selectedPost.value = null
+  selectedPost.value = null;
 
-  isSidebarOpen.value = true
+  isSidebarOpen.value = true;
 }
 
 function closePost() {
-  selectedPost.value = null
+  selectedPost.value = null;
 
-  isSidebarOpen.value = false
+  isSidebarOpen.value = false;
 }
 
 function savePost(post) {
   const postIndex = posts.value.findIndex(
-    currentPost => currentPost.id === post.id
-  )
+    (currentPost) => currentPost.id === post.id,
+  );
 
   if (postIndex !== -1) {
     posts.value[postIndex] = {
       ...post,
-    }
+    };
 
-    posts.value = [...posts.value]
+    posts.value = [...posts.value];
   } else {
-    posts.value = [
-      post,
-      ...posts.value,
-    ]
+    posts.value = [post, ...posts.value];
   }
 
-  selectedPost.value = post
+  selectedPost.value = post;
 
-  isSidebarOpen.value = false
+  isSidebarOpen.value = false;
 }
 
 function deletePost(id) {
-  posts.value = posts.value.filter(
-    post => post.id !== id
-  )
+  posts.value = posts.value.filter((post) => post.id !== id);
 
-  closePost()
+  closePost();
 }
 </script>
