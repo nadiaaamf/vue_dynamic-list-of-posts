@@ -47,6 +47,13 @@ function validate() {
   return Object.keys(errors.value).length === 0
 }
 
+// ✅ Função nova
+function handleClear() {
+  title.value = ''
+  body.value = ''
+  errors.value = {}
+}
+
 async function handleSubmit() {
   if (!validate()) {
     return
@@ -145,6 +152,16 @@ async function handleSubmit() {
           @click="handleSubmit"
         >
           {{ post ? 'Save' : 'Create' }}
+        </button>
+      </div>
+
+      <!-- ✅ Botão Clear novo -->
+      <div class="control">
+        <button
+          class="button is-warning"
+          @click="handleClear"
+        >
+          Clear
         </button>
       </div>
 

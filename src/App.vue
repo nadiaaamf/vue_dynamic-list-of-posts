@@ -61,21 +61,20 @@ function handleLogout() {
 }
 
 async function loadPosts() {
-  loading.value = true;
-  error.value = false;
+  loading.value = true
+  error.value = false
 
   try {
-    const response = await fetch("https://jsonplaceholder.typicode.com/posts");
-
-    const data = await response.json();
-
-    posts.value = data.filter((post) => post.userId === userId.value);
+    const response = await fetch(
+      'https://mate-academy.github.io/fe-students-api/api/posts'  // ✅ URL corrigida
+    )
+    const data = await response.json()
+    posts.value = data.filter((post) => post.userId === userId.value)
   } catch (err) {
-    error.value = true;
-
-    console.error(err);
+    error.value = true
+    console.error(err)
   } finally {
-    loading.value = false;
+    loading.value = false
   }
 }
 
